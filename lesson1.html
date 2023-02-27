@@ -4,7 +4,8 @@
     </head>
 
     <body>
-        <h1>Любимые цвета студента</h1>
+        <h1 id="title-color">Любимые цвета студента</h1>
+        <button id="title-button">Добавить</button>
         <ul id="list">
             <li>Глеб, любимый цвет <span style='color: #ff2600'>#ff2600</span></li>
             <li>Иван, любимый цвет <span style='color: #00f900'>#00f900></div></span></li>
@@ -30,13 +31,18 @@
     <style>
         .error {
             background-color: red;
-        }
+        };
+        .change {
+            background-color: red;
+        };
     </style>
     <script>
         const buttonElement = document.getElementById('add-button');
         const listElement = document.getElementById('list');
         const nameElement = document.getElementById('name-input');
         const colorElement = document.getElementById('color-input');
+        const titleColorElement = document.getElementById('title-color');
+        const titleButtonElement = document.getElementById('title-button');
 
         buttonElement.addEventListener('click', () => {
             nameElement.classList.remove('error');
@@ -49,6 +55,9 @@
             `<li>
                 ${nameElement.value}, любимый цвет <span style='color: ${colorElement.value}'>${colorElement.value}</span>
             </li>`;
+        });
+        titleButtonElement.addEventListener('click', () => {
+            titleColorElement.classList.add('change');
         });
     </script>
 </html>
