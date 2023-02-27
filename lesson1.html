@@ -27,6 +27,11 @@
             <button>Удалить <span style="color: tomato">#ff2600</span></button>
         </div>
     </body>
+    <style>
+        .error {
+            background-color: red;
+        }
+    </style>
     <script>
         const buttonElement = document.getElementById('add-button');
         const listElement = document.getElementById('list');
@@ -34,12 +39,16 @@
         const colorElement = document.getElementById('color-input');
 
         buttonElement.addEventListener('click', () => {
+            nameElement.classList.remove('error');
+            if (nameElement.value === ''){
+                nameElement.classList.add('error');
+                return;
+            }
             const oldListHtml = listElement.innerHTML;
             listElement.innerHTML = oldListHtml + 
             `<li>
                 ${nameElement.value}, любимый цвет <span style='color: ${colorElement.value}'>${colorElement.value}</span>
             </li>`;
-            
         });
     </script>
 </html>
