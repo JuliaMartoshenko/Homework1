@@ -4,8 +4,8 @@
     </head>
 
     <body>
-        <h1 id="title">Любимые цвета студента</h1>
-        <button id="title-change">1</button>
+        <h1 id="title-color">Любимые цвета студента</h1>
+        <button id="title-button">Добавить</button>
         <ul id="list">
             <li>Глеб, любимый цвет <span style='color: #ff2600'>#ff2600</span></li>
             <li>Иван, любимый цвет <span style='color: #00f900'>#00f900></div></span></li>
@@ -15,10 +15,10 @@
         <div>
             <h3>Форма добавления</h3>
             Имя:
-            <input type="text" />
+            <input type="text" id="name-input"/>
             <br /><br />
             Цвет:
-            <input type="color" />
+            <input type="color"  id="color-input"/>
             <br /><br />            
             <button id="add-button">Добавить</button>
         </div>
@@ -28,22 +28,36 @@
             <button>Удалить <span style="color: tomato">#ff2600</span></button>
         </div>
     </body>
+    <style>
+        .error {
+            background-color: red;
+        };
+        .change {
+            background-color: red;
+        };
+    </style>
     <script>
         const buttonElement = document.getElementById('add-button');
         const listElement = document.getElementById('list');
-        let titleElement = document.getElementById('title');
-        const titleButtonElement =document.getElementById('title-change');
+        const nameElement = document.getElementById('name-input');
+        const colorElement = document.getElementById('color-input');
+        const titleColorElement = document.getElementById('title-color');
+        const titleButtonElement = document.getElementById('title-button');
 
         buttonElement.addEventListener('click', () => {
+            nameElement.classList.remove('error');
+            if (nameElement.value === ''){
+                nameElement.classList.add('error');
+                return;
+            }
             const oldListHtml = listElement.innerHTML;
-            listElement.innerHTML = oldListHtml + `<li>Глеб, любимый цвет <span style='color: #ff2600'>#ff2600</span></li>`;
+            listElement.innerHTML = oldListHtml + 
+            `<li>
+                ${nameElement.value}, любимый цвет <span style='color: ${colorElement.value}'>${colorElement.value}</span>
+            </li>`;
         });
         titleButtonElement.addEventListener('click', () => {
-            if (titleElement.innerHTML = `<h1 id="title">Любимые цвета студента</h1>`) {
-                titleElement.innerHTML = `Самые любимые цвета студента`;
-            } else {
-                titleElement.innerHTML = `Любимые цвета студента`;
-            }
+            titleColorElement.classList.add('change');
         });
     </script>
 </html>
