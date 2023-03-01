@@ -4,8 +4,8 @@
     </head>
 
     <body>
-        <h1 id="title-color">Любимые цвета студента</h1>
-        <button id="title-button">Добавить</button>
+        <h1 id="title-text">Любимые цвета студента</h1>
+        <button id="title-button">Изменить заголовок</button>
         <ul id="list">
             <li>Глеб, любимый цвет <span style='color: #ff2600'>#ff2600</span></li>
             <li>Иван, любимый цвет <span style='color: #00f900'>#00f900></div></span></li>
@@ -41,7 +41,7 @@
         const listElement = document.getElementById('list');
         const nameElement = document.getElementById('name-input');
         const colorElement = document.getElementById('color-input');
-        const titleColorElement = document.getElementById('title-color');
+        const titleTextElement = document.getElementById('title-text');
         const titleButtonElement = document.getElementById('title-button');
 
         buttonElement.addEventListener('click', () => {
@@ -57,7 +57,16 @@
             </li>`;
         });
         titleButtonElement.addEventListener('click', () => {
-            titleColorElement.classList.add('change');
+            console.log(titleTextElement.innerHTML);
+            if (titleTextElement.innerHTML === `Любимые цвета студента`){
+                titleTextElement.innerHTML = 'Самые любимые цвета студента';
+                console.log(titleTextElement.innerHTML);
+                return;
+            } else {
+                console.log('df');
+                titleTextElement.innerHTML = 'Любимые цвета студента';
+                return;
+            }
         });
     </script>
 </html>

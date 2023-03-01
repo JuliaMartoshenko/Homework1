@@ -1,49 +1,124 @@
 <!DOCTYPE html>
-    <head>
-        <title>Урок "Управление html содержимым из js</title>
-    </head>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Урок "Динамические обработчики событий и всплытие"</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-    <body>
-        <h1 id="title">Любимые цвета студента</h1>
-        <button id="title-change">1</button>
-        <ul id="list">
-            <li>Глеб, любимый цвет <span style='color: #ff2600'>#ff2600</span></li>
-            <li>Иван, любимый цвет <span style='color: #00f900'>#00f900></div></span></li>
-            <li>Люси, любимый цвет <span style='color: #0432ff'>#0432ff</span></li>
-        </ul>
+  <body>
+    <h1>Любимые цвета студентов</h1>
+    <ul class="students" id="list">
+        <!-- Рендерится из js -->
+    </ul>
 
-        <div>
-            <h3>Форма добавления</h3>
-            Имя:
-            <input type="text" />
-            <br /><br />
-            Цвет:
-            <input type="color" />
-            <br /><br />            
-            <button id="add-button">Добавить</button>
-        </div>
-        <br/>
-        <div>
-            <h3>Форма управления</h3>
-            <button>Удалить <span style="color: tomato">#ff2600</span></button>
-        </div>
-    </body>
-    <script>
-        const buttonElement = document.getElementById('add-button');
-        const listElement = document.getElementById('list');
-        let titleElement = document.getElementById('title');
-        const titleButtonElement =document.getElementById('title-change');
+    <div class="form">
+      <h3 class="form-title">Форма добавления</h3>
+      <div class="form-row">
+        Имя:&nbsp;&nbsp;
+        <input
+          type="text"
+          id="name-input"
+          class="input"
+          placeholder="Василий"
+        />
+      </div>
+      <div class="form-row">
+        Цвет:&nbsp;
+        <input type="color" id="color-input" class="color-input input" />
+        <br /><br />
+      </div>
+      <button class="button" id="add-button">Добавить</button>
+    </div>
+  </body>
 
-        buttonElement.addEventListener('click', () => {
-            const oldListHtml = listElement.innerHTML;
-            listElement.innerHTML = oldListHtml + `<li>Глеб, любимый цвет <span style='color: #ff2600'>#ff2600</span></li>`;
+  <script>
+    const buttonElement = document.getElementById("add-button");
+    const listElement = document.getElementById("list");
+    const nameInputElement = document.getElementById("name-input");
+    const colorInputElement = document.getElementById("color-input");
+
+    const studentElements = document.querySelectorAll(".student");
+
+    const students = [
+        {
+            name:"Глеб",
+            color:"#ff2600",
+        },
+        {
+            name:"Иван",
+            color:"#00f900",
+        },
+        {
+            name:"Люси",
+            color:"0432ff",
+        },
+    ]
+
+    const renderStudents = () => {
+        const studentHtml = students.map((student) => {
+            return `<li class="student" data-color="${student.color}">
+            <p class="student-name">
+              ${student.name}, любимый цвет
+              <span style="color: ${student.color}"> ${student.color}</span>
+              <button class="delete-button">Удалить</button>
+            </p>
+          </li>`;
+        }).join('');
+        listElement.innerHTML = studentHtml
+    }
+
+    renderStudents();
+
+
+    // Добавляет обработчики кликов ко всем элементам с классом student
+    const initEventListeners = () => {
+      // Находит все элементы с классом student в разметке
+      const studentElements = document.querySelectorAll(".student");
+
+      // Цикл for проходит по каждому элементу в списке
+      for (const studentElement of studentElements) {
+        // Добавляет обработчик клика на конкретный элемент в списке
+        studentElement.addEventListener("click", () => {
+          // Достает data-color из элемента
+          const color = studentElement.dataset.color;
+          console.log(color);
         });
-        titleButtonElement.addEventListener('click', () => {
-            if (titleElement.innerHTML = `<h1 id="title">Любимые цвета студента</h1>`) {
-                titleElement.innerHTML = `Самые любимые цвета студента`;
-            } else {
-                titleElement.innerHTML = `Любимые цвета студента`;
-            }
-        });
-    </script>
+      }
+    };
+
+    const initDeleteButtonListeners = () => {
+        const deleteButtonElements = document.querySelectorAll(".delete-button");
+
+        for (const deleteButtonElement of deleteButtonElements) {
+            deleteButtonElement.addEventListener('click', () => {
+            console.log('hello')
+          })
+        }
+      }
+
+    initEventListeners();
+    initDeleteButtonListeners();
+
+    buttonElement.addEventListener("click", () => {
+      nameInputElement.classList.remove("input-error");
+
+      if (nameInputElement.value === "") {
+        nameInputElement.classList.add("input-error");
+        return;
+      }
+
+      students.push({
+        name: nameInputElement.value,
+        color: colorInputElement.value,
+      })
+
+      renderStudents();
+      initEventListeners();
+      initDeleteButtonListeners();
+
+      nameInputElement.value = "";
+    });
+  </script>
 </html>
+
