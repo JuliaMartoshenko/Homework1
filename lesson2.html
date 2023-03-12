@@ -2,32 +2,27 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Урок "Динамические обработчики событий и всплытие"</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>Урок "Асинхронность"</title>
   </head>
 
-  <body>
-    <h1>Любимые цвета студентов</h1>
-    <ul class="students" id="list">
-      <!-- Рендерится из js -->
+  <body style="background-color: ''">
+    <h1>Список задач</h1>
+    <ul class="tasks" id="list">
+      <!-- Список рендерится из JS -->
     </ul>
-
+    <br />
     <div class="form">
       <h3 class="form-title">Форма добавления</h3>
       <div class="form-row">
-        Имя:&nbsp;&nbsp;
+        Что нужно сделать:
         <input
           type="text"
-          id="name-input"
+          id="text-input"
           class="input"
-          placeholder="Василий"
+          placeholder="Выпить кофе"
         />
       </div>
-      <div class="form-row">
-        Цвет:&nbsp;
-        <input type="color" id="color-input" class="color-input input" />
-        <br /><br />
-      </div>
+      <br />
       <button class="button" id="add-button">Добавить</button>
     </div>
   </body>
@@ -35,78 +30,93 @@
   <script>
     const buttonElement = document.getElementById("add-button");
     const listElement = document.getElementById("list");
-    const nameInputElement = document.getElementById("name-input");
-    const colorInputElement = document.getElementById("color-input");
+    const textInputElement = document.getElementById("text-input");
 
-    students = [
-      {
-        name: "Глеб",
-        color: "#ff2600",
-      },
-      {
-        name: "Иван",
-        color: "#00f900",
-      },
-      {
-        name: "Люси",
-        color: "#0432ff",
-      },
-    ]
+    // //запрос на сервер GET + смена цвета фона
+    // const fetchPromiseColor = fetch('https://webdev-hw-api.vercel.app/api/tasks/random-red', {
+    //   method: 'GET',
+    // });
+    // const responseColor = fetchPromiseColor.then((responseColor) => {
+    //   const jsonPromiseColor = responseColor.json();
+    //   const colorData = jsonPromiseColor.then((colorData) => {
+    //     const elements = document.querySelectorAll('body');
+    //     elements[0].style.backgroundColor = colorData.color;
+    //   });
+    // });
 
 
-    const initDeleteStudentListeners = () => {
-      const deleteStudentElements = document.querySelectorAll(".delete-button");
+  // TODO: Получать из хранилища данных
+    const fetchPromise = fetch('https://webdev-hw-api.vercel.app/api/todos', {
+      method: 'GET',
+    });
+    const response = fetchPromise.then((response) => {
+      const jsonPromise = response.json();
+      const tasksData = jsonPromise.then((tasksData) => {
+        console.log(tasksData);
+        tasks = tasksData.todos;
+        renderTasks();
+      });
+    });  
+    let tasks = [];
 
-      for (const deleteStudentElement of deleteStudentElements) {
-        deleteStudentElement.addEventListener("click", () => {
-          console.log('удаляю');
-        });
-      }
-    }
+    const renderTasks = () => {
+      const tasksHtml = tasks
+        .map((task, index) => {
+          return `
+          <li class="task">
+            <p class="task-text">
+              ${task.text}
+              <button data-index="${index}" class="button delete-button">Удалить</button>
+            </p>
+          </li>`;
+        })
+        .join("");
 
-    const initEventListeners = () => {
-      const studentElements = document.querySelectorAll(".student");
+      listElement.innerHTML = tasksHtml;
+      const deleteButtons = document.querySelectorAll(".delete-button");
 
-      for (const studentElement of studentElements) {
-        studentElement.addEventListener("click", () => {
-          console.log(1);
+      for (const deleteButton of deleteButtons) {
+        deleteButton.addEventListener("click", (event) => {
+          event.stopPropagation();
+
+          deleteButton.innerHTML = "задача удаляется...";
+
+          setTimeout(() => {
+            const index = deleteButton.dataset.index;
+          
+          // TODO: Удалять из хранилища данных
+            tasks.splice(index, 1);
+
+            renderTasks();
+          }, 1000);
         });
       }
     };
 
-    const renderStudents = () => {
-      const studentsHtml = students.map((student) => {
-        return `<li class="student">
-            <p class="student-name">
-              ${student.name}, любимый цвет
-              <span style="color: ${student.color}"> ${student.color}</span>
-            </p>
-            <button class="delete-button">Удалить</button>
-          </li>`;
-      });
-      listElement.innerHTML = studentsHtml.join('');
-      initEventListeners();
-      initDeleteStudentListeners();
-    }
-
-    renderStudents();
+    renderTasks();
 
     buttonElement.addEventListener("click", () => {
-      nameInputElement.classList.remove("input-error");
-
-      if (nameInputElement.value === "") {
-        nameInputElement.classList.add("input-error");
+      if (textInputElement.value === "") {
         return;
       }
 
-      students.push({
-        name: nameInputElement.value,
-        color:colorInputElement.value,
+      //Отправка данных на сервер
+      fetch('https://webdev-hw-api.vercel.app/api/todos',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          text: textInputElement.value,
+        }),
+      }).then((response) => {
+        response.json().then((responseJson) => {
+          tasks = responseJson.todos;
+          renderTasks();
+        })
       })
 
-      renderStudents();
+      renderTasks();
 
-      nameInputElement.value = "";
+      textInputElement.value = "";
     });
   </script>
 </html>
