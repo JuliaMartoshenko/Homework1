@@ -61,12 +61,12 @@
 
     const renderTasks = () => {
       const tasksHtml = tasks
-        .map((task, index) => {
+        .map((task) => {
           return `
           <li class="task">
             <p class="task-text">
               ${task.text}
-              <button data-index="${index}" class="button delete-button">Удалить</button>
+              <button data-id="${task.id}" class="button delete-button">Удалить</button>
             </p>
           </li>`;
         })
@@ -82,10 +82,19 @@
           deleteButton.innerHTML = "задача удаляется...";
 
           setTimeout(() => {
-            const index = deleteButton.dataset.index;
+            const id = deleteButton.dataset.id;
+
+            fetch('https://webdev-hw-api.vercel.app/api/todos/'+ id,
+            {
+              method: 'DELETE',
+              }).then((response) => {
+              response.json().then((responseJson) => {
+              tasks = responseJson.todos;
+              renderTasks();
+            })
+          })
           
-          // TODO: Удалять из хранилища данных
-            tasks.splice(index, 1);
+
 
             renderTasks();
           }, 1000);
